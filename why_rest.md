@@ -37,6 +37,13 @@
 6. 关于安全的话，可以使用https，平台的话可以上OAuth2
 7. 如果操作的资源就是一个动词，eg:比较分支差异，那就可以采用github_v3中通过[...](https://developer.github.com/v3/repos/commits/#compare-two-commits)来操作。(`curl https://api.github.com/repos/:owner/:repo/compare/hubot:branchname...octocat:branchname`)
 
+##需要考量的点
+> emmm...想了下还是需要写些什么
+
+1. 首先在实际开发中会遇到错误信息很多需要自定义一堆错误码（当然业务逻辑简单的话，就没必要，HTTP code完全够用），单纯使用HTTP code已经不太满足业务需求。
+2. 实际开发中其实还是有蛮多不能直接当成资源来定义的，比如登录登出，如果把这个换成处理session资源有点很奇怪，登录就是登录，接口需要简单明了不是吗？
+3. 对于实际业务中的批量删除，批量添加`/blog?user={"ids":["aa","bb","cc"]}` 使用这种方式操作会有点为了适应这个设计规范而不得已为之的感觉。
+4. 在实际开发中我们定义的接口可能分为给第三方的，给内部系统使用的，给前端使用的，需要考虑权限控制，接口限流等这些和资源就不太搭干了（第三方接口使用REST还不错，类似github）使用REST就不太适合了。
 
 **参考阅读**
 [stackoverflow](https://stackoverflow.com/questions/671118/what-exactly-is-restful-programming/3950863#3950863)
