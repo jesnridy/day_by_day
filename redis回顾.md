@@ -42,7 +42,7 @@
 
 ----
 
-#Redis为什么快？	
+# Redis为什么快？	
 
 redis支持10w+ qps不必单进程多线程的memcache差太多。
 
@@ -52,3 +52,7 @@ redis支持10w+ qps不必单进程多线程的memcache差太多。
 4. 采用IO多路复用，BIO。
 
 **注意点：**由于redis是单线程，当并发请求过来如果出现一个耗时操作，那么会导致并发下降，所以一般采用master-slave的方式，将耗时操作放到slave上跑。
+
+# Redis锁机制
+1. 原子加，在redis里生成一个key，然后每次去对这个key+1，作为乐观锁使用。
+2. 使用SETNX设置一个key，如果不存在才能设置成功。
