@@ -56,3 +56,38 @@ redis支持10w+ qps不必单进程多线程的memcache差太多。
 # Redis锁机制
 1. 原子加，在redis里生成一个key，然后每次去对这个key+1，作为乐观锁使用。
 2. 使用SETNX设置一个key，如果不存在才能设置成功。
+
+# Redis 缓存命中率
+1. redis中有个info命令可以看到里面这两个字段`keyspace_hits` `keyspace_misses` 可以计算出缓存命中率。
+2. 提高缓存命中率的一个场景就是在**读多写少**，否则使用缓存意义不大。
+3. 再一个业务逻辑设计中缓存对象的粒度越小，命中率约高，比如你把所有用户信息扔到一个集合中，只要当其中一个用户发生变化都要更新或移除缓存。只有当你把业务逻辑设计成单个用户，那对缓存命中率就很好。
+4. 缓存容量的限制，当单机缓存容量到最大时候也会进行落盘处理，影响缓存命中率，可以采用分布式部署对容量进行动态扩展，缓存的淘汰算法目前用的最多的就是[LRU](https://www.cnblogs.com/-OYK/archive/2012/12/05/2803317.html)算法(新数据访问过来插入链表头，每当缓存命中则将数据移到表头，当链表满的时候，将链表尾部数据丢掉)。
+
+```
+送一个Python实现的LRU
+
+class LRUCache(object):
+	def __init__(self, capacity):
+		self.capacity = capacity
+		self.cache = {}
+		self.lru = {}
+		self.tm = 0
+	
+	def get(self, key):
+		if key in self.cache.keys():
+			self.lru[key] = self.tm
+			self.tm += 1
+			return self.cache[key]
+		return -1
+	
+	def set(self, key, value):
+		if len(self.cache) >= self.capacity:
+			old_key = min(self.lru.keys, keys=lambda k: self.lru[k])
+			self.cache.pop(old_key)
+			self.lru.pop(old_key)
+		self.cache[key] = value
+		self.lru[key] = self.tm
+		self.tm += 1
+		
+
+```
