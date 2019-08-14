@@ -7,7 +7,7 @@
 	- 运行速度区别：编译器更快，任何一个修改需要重新编译，解释器相比较而言慢了些，但是修改的代码不需要整体编译。
 	- 解释器运行过程：先进行词法分析->语法分析->编译器->执行器/虚拟机
 	
-## (python解释器执行过程)[https://github.com/python/cpython/blob/cb65b3a4f484ce71dcb76a918af98c7015513025/Doc/c-api/init.rst]
+## [python解释器执行过程](https://github.com/python/cpython/blob/cb65b3a4f484ce71dcb76a918af98c7015513025/Doc/c-api/init.rst)
 - 环境初始化
     - 进程线程初始化: 
     - 模块初始化
